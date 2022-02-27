@@ -61,6 +61,11 @@ function qa_send_notification($userid, $email, $handle, $subject, $body, $subs, 
 
 	if ($qa_notifications_suspended > 0)
 		return false;
+	
+	if ($fromemail == null)
+	{
+	 $fromemail =   qa_opt('from_email');
+	}
 
 	require_once QA_INCLUDE_DIR . 'db/selects.php';
 	require_once QA_INCLUDE_DIR . 'util/string.php';
@@ -107,7 +112,7 @@ function qa_send_notification($userid, $email, $handle, $subject, $body, $subs, 
 		$subs['^close'] = "\n";
 
 		return qa_send_email(array(
-			'fromemail' => qa_opt('from_email'),
+			'fromemail' => $fromemail, //arjun
 			'fromname' => qa_opt('site_title'),
 			'toemail' => $email,
 			'toname' => $handle,
