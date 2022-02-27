@@ -428,8 +428,8 @@ function qa_db_unanswered_qs_selectspec($voteuserid, $by, $start, $categoryslugs
 
 	$selectspec = qa_db_posts_basic_selectspec($voteuserid, $full);
 
-	$selectspec['source'] .= " JOIN (SELECT postid FROM ^posts WHERE " . qa_db_categoryslugs_sql_args($categoryslugs, $selectspec['arguments']) . "type=$ AND " . $bysql . " AND closedbyid IS NULL ORDER BY ^posts.created DESC LIMIT #,#) y ON ^posts.postid=y.postid";
-
+	//	$selectspec['source'] .= " JOIN (SELECT postid FROM ^posts WHERE " . qa_db_categoryslugs_sql_args($categoryslugs, $selectspec['arguments']) . "type=$ AND " . $bysql . " AND closedbyid IS NULL ORDER BY ^posts.created DESC LIMIT #,#) y ON ^posts.postid=y.postid";//arjun
+	$selectspec['source'].=" JOIN (SELECT postid FROM ^posts WHERE ".qa_db_categoryslugs_sql_args($categoryslugs, $selectspec['arguments'])."type=$ AND ".$bysql." AND closedbyid IS NULL ORDER BY ^posts.created DESC ) y ON ^posts.postid=y.postid order by ^posts.created desc LIMIT #,#";
 	array_push($selectspec['arguments'], $type, $start, $count);
 
 	$selectspec['sortdesc'] = 'created';
@@ -1218,7 +1218,9 @@ function qa_db_tag_recent_qs_selectspec($voteuserid, $tag, $start, $full = false
 	$selectspec = qa_db_posts_basic_selectspec($voteuserid, $full);
 
 	// use two tests here - one which can use the index, and the other which narrows it down exactly - then limit to 1 just in case
-	$selectspec['source'] .= " JOIN (SELECT postid FROM ^posttags WHERE wordid=(SELECT wordid FROM ^words WHERE word=$ AND word=$ COLLATE utf8_bin LIMIT 1) ORDER BY postcreated DESC LIMIT #,#) y ON ^posts.postid=y.postid";
+	//arjun	
+	//$selectspec['source'] .= " JOIN (SELECT postid FROM ^posttags WHERE wordid=(SELECT wordid FROM ^words WHERE word=$ AND word=$ COLLATE utf8_bin LIMIT 1) ORDER BY postcreated DESC LIMIT #,#) y ON ^posts.postid=y.postid";
+	$selectspec['source'] .= " JOIN (SELECT postid FROM ^posttags WHERE wordid=(SELECT wordid FROM ^words WHERE word=$ AND word=$  LIMIT 1) ORDER BY postcreated DESC LIMIT #,#) y ON ^posts.postid=y.postid";
 	array_push($selectspec['arguments'], $tag, qa_strtolower($tag), $start, $count);
 	$selectspec['sortdesc'] = 'created';
 
@@ -1259,7 +1261,9 @@ function qa_db_user_recent_qs_selectspec($voteuserid, $identifier, $count = null
 
 	$selectspec = qa_db_posts_basic_selectspec($voteuserid);
 
-	$selectspec['source'] .= " WHERE ^posts.userid=" . (QA_FINAL_EXTERNAL_USERS ? "$" : "(SELECT userid FROM ^users WHERE handle=$ LIMIT 1)") . " AND type='Q' ORDER BY ^posts.created DESC LIMIT #,#";
+	//	$selectspec['source'] .= " WHERE ^posts.userid=" . (QA_FINAL_EXTERNAL_USERS ? "$" : "(SELECT userid FROM ^users WHERE handle=$ LIMIT 1)") . " AND type='Q' ORDER BY ^posts.created DESC LIMIT #,#";//arjun
+	$selectspec['source'].=" WHERE ^posts.userid=".(QA_FINAL_EXTERNAL_USERS ? "$" : "(SELECT userid FROM ^users WHERE handle=$ LIMIT 1)")." AND ^posts.type='Q' ORDER BY ^posts.created DESC LIMIT #,#"; //arjun
+
 	array_push($selectspec['arguments'], $identifier, $start, $count);
 	$selectspec['sortdesc'] = 'created';
 
@@ -1796,7 +1800,8 @@ function qa_db_user_favorite_qs_selectspec($userid, $limit = null, $start = 0)
 
 	$selectspec = qa_db_posts_basic_selectspec($userid);
 
-	$selectspec['source'] .= ' JOIN ^userfavorites AS selectfave ON ^posts.postid=selectfave.entityid WHERE selectfave.userid=$ AND selectfave.entitytype=$ AND ^posts.type="Q" ORDER BY ^posts.created DESC';
+	//$selectspec['source'] .= ' JOIN ^userfavorites AS selectfave ON ^posts.postid=selectfave.entityid WHERE selectfave.userid=$ AND selectfave.entitytype=$ AND ^posts.type="Q" ORDER BY ^posts.created DESC';
+	$selectspec['source'] .= ' JOIN ^userfavorites AS selectfave ON ^posts.postid=selectfave.entityid WHERE selectfave.userid=$ AND selectfave.entitytype=$ AND ^posts.type="Q" ORDER BY ^posts.categoryid,^posts.created DESC';//arjun
 	$selectspec['arguments'][] = $userid;
 	$selectspec['arguments'][] = QA_ENTITY_QUESTION;
 
@@ -1807,8 +1812,8 @@ function qa_db_user_favorite_qs_selectspec($userid, $limit = null, $start = 0)
 		$selectspec['arguments'][] = $limit;
 	}
 
-	$selectspec['sortdesc'] = 'created';
-
+	$selectspec['sortdesc'] = 'created';//arjun
+	$selectspec['sortdesc'] = 'categoryid';
 	return $selectspec;
 }
 

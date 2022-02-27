@@ -257,8 +257,9 @@ class qa_html_theme_base
 	}
 
 	public function html()
-	{
-		$attribution = '<!-- Powered by Question2Answer - http://www.question2answer.org/ -->';
+	{//arjun
+		//$attribution = '<!-- Powered by Question2Answer - http://www.question2answer.org/ -->';
+		$attribution = '';
 		$extratags = isset($this->content['html_tags']) ? $this->content['html_tags'] : '';
 
 		$this->output(
@@ -909,10 +910,10 @@ class qa_html_theme_base
 	public function attribution()
 	{
 		// Hi there. I'd really appreciate you displaying this link on your Q2A site. Thank you - Gideon
-
+//arjun
 		$this->output(
 			'<div class="qa-attribution">',
-			'Powered by <a href="http://www.question2answer.org/">Question2Answer</a>',
+			'Thanks to  <a href="http://www.question2answer.org/">Q2A</a>',
 			'</div>'
 		);
 	}

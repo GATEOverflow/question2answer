@@ -1403,7 +1403,8 @@ foreach ($showoptions as $optionname) {
 				elseif ($optionname == 'permit_vote_q' || $optionname == 'permit_vote_a' || $optionname == 'permit_vote_c' || $optionname == 'permit_post_wall')
 					$narrowest = QA_PERMIT_APPROVED_POINTS;
 				elseif ($optionname == 'permit_delete_hidden' || $optionname == 'permit_edit_silent')
-					$narrowest = QA_PERMIT_ADMINS;
+			//arjun		$narrowest = QA_PERMIT_ADMINS;
+ $narrowest = QA_PERMIT_SUPERS;
 				elseif ($optionname == 'permit_view_voters_flaggers')
 					$narrowest = QA_PERMIT_SUPERS;
 				else

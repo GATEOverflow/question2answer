@@ -329,6 +329,18 @@ if (isset($editpage)) {
 	$permitoptions = qa_admin_permit_options(QA_PERMIT_ALL, QA_PERMIT_ADMINS, false, false);
 	$permitvalue = @$permitoptions[isset($inpermit) ? $inpermit : $editpage['permit']];
 
+//arjun
+        $editorname = isset($in['editor']) ? $in['editor'] : qa_opt('editor_for_qs');
+        $content = isset($incontent) ? $incontent : @$editpage['content'];
+        $editor = qa_load_editor($content, 'html', $editorname);
+
+        $field = qa_editor_load_field($editor, $qa_content, $content, 'html', 'content', 12, false);
+        $field['label'] = qa_lang_html('admin/page_content_html');
+        $field['error'] = qa_html(@$errors['content']);
+        $field['id'] = 'content_display';
+        $field['tags'] = 'name="content"';
+
+
 	$qa_content['form'] = array(
 		'tags' => 'method="post" action="' . qa_path_html(qa_request()) . '"',
 

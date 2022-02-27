@@ -572,6 +572,8 @@ function qa_question_set_status($oldquestion, $status, $userid, $handle, $cookie
  */
 function qa_question_set_category($oldquestion, $categoryid, $userid, $handle, $cookieid, $answers, $commentsfollows, $closepost = null, $silent = false)
 {
+	 //arjun
+        if($categoryid == $oldquestion['categoryid']) return;
 	$oldpath = qa_db_post_get_category_path($oldquestion['postid']);
 
 	qa_db_post_set_category($oldquestion['postid'], $categoryid, $silent ? null : $userid, $silent ? null : qa_remote_ip_address());
