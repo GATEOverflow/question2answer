@@ -1237,7 +1237,8 @@ function qa_db_tag_word_selectspec($tag)
 {
 	return array(
 		'columns' => array('wordid', 'word', 'tagcount'),
-		'source' => '^words WHERE word=$ AND word=$ COLLATE utf8_bin',
+		//'source' => '^words WHERE word=$ AND word=$ COLLATE utf8_bin',//arjun
+		'source' => '^words WHERE word=$ AND word=$',
 		'arguments' => array($tag, qa_strtolower($tag)),
 		'single' => true,
 	);
