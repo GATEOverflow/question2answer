@@ -368,13 +368,12 @@ function qa_db_qs_selectspec($voteuserid, $sort, $start, $categoryslugs = null, 
 	}
 
 	$selectspec = qa_db_posts_basic_selectspec($voteuserid, $full);
-
-	$selectspec['source'] .=
-		" JOIN (SELECT postid FROM ^posts WHERE " .
-		qa_db_categoryslugs_sql_args($categoryslugs, $selectspec['arguments']) .
-		(isset($createip) ? "createip=UNHEX($) AND " : "") .
-		"type=$ " . $sortsql . " LIMIT #,#) y ON ^posts.postid=y.postid";
-
+		$selectspec['source'] .=
+			" JOIN (SELECT postid FROM ^posts WHERE " .
+			qa_db_categoryslugs_sql_args($categoryslugs, $selectspec['arguments']) .
+			(isset($createip) ? "createip=UNHEX($) AND " : "") .
+			//		"type=$ " . $sortsql . " LIMIT #,#) y ON ^posts.postid=y.postid"; //arjun
+			"type=$ ) y ON ^posts.postid=y.postid where ^posts.type='$type' ".$sortsql." LIMIT #,#";
 	if (isset($createip)) {
 		$selectspec['arguments'][] = bin2hex(@inet_pton($createip));
 	}
