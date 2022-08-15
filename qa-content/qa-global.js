@@ -261,7 +261,9 @@ function qa_submit_answer(questionid, elem)
 
 				var e = document.createElement('div');
 				e.innerHTML = lines.slice(3).join("\n");
-				MathJax.Hub.Queue(['Typeset', MathJax.Hub, e]);//arjun
+				 typeset(() => {
+  return [e];
+});//arjun
                                 prettyPrint();
 
 				var c = e.firstChild;
