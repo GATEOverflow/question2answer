@@ -88,6 +88,11 @@ function qa_submit_answer(questionid, elem)
 
 				var e = document.createElement('div');
 				e.innerHTML = lines.slice(3).join("\n");
+				typeset(() => {
+  return [e];
+});
+
+                                prettyPrint();
 
 				var c = e.firstChild;
 				c.style.display = 'none';
@@ -134,6 +139,12 @@ function qa_submit_comment(questionid, parentid, elem)
 				a.qa_disabled = true;
 
 				var c = document.getElementById(lines[1]); // id of comment
+				typeset(() => {
+					  const math = document.querySelector('body');
+  return [math];
+});
+                                prettyPrint();
+
 				if (c) {
 					c.style.display = 'none';
 					qa_reveal(c, 'comment');
@@ -177,6 +188,11 @@ function qa_answer_click(answerid, questionid, target)
 					qa_set_outer_html(l, 'answer', h);
 				else
 					qa_conceal(l, 'answer');
+				typeset(() => {
+					  const math = document.querySelector('body');
+  return [math];
+});
+                                prettyPrint();
 
 			} else {
 				target.form.elements.qa_click.value = target.name;
@@ -236,6 +252,9 @@ function qa_show_comments(questionid, parentid, elem)
 				var l = document.getElementById('c' + parentid + '_list');
 				l.innerHTML = lines.slice(1).join("\n");
 				l.style.display = 'none';
+				typeset(() => {
+  return [l];
+});
 				qa_reveal(l, 'comments');
 
 			} else {

@@ -104,8 +104,32 @@ if (isset($question)) {
 
 // Deal with question not found or not viewable, otherwise report the view event
 
-if (!isset($question))
+if (!isset($question)) { //arjun
+	$query = "select tags from ^posts where postid = #";
+	$result = qa_db_query_sub($query, $questionid);
+	$tags = qa_db_read_one_value($result, true);
+	$mytags = explode(",", $tags);
+	$globalfiltertags = qa_opt('qa-filtertags-global');
+	$query = "select tag from ^exams";
+	$result = qa_db_query_sub($query);
+	$examtags = qa_db_read_all_values($result);
+	$filteredtags = explode(",", $globalfiltertags);
+
+	foreach($filteredtags as $filtered) {
+		if(in_array($filtered, $mytags)) {
+			if(in_array($filtered, $examtags)) {
+				$qa_content = qa_content_prepare();
+				$qa_content['suggest_next'] = qa_html_suggest_qs_tags(qa_using_tags());
+				$query = "select postid from ^exams where tag = $";
+				$result = qa_db_query_sub($query, $filtered);
+				$examid = qa_db_read_one_value($result, true);
+				$qa_content['error'] = "This is an exam question and can be seen only after taking the exam <a href='".qa_path_absolute("exam")."/$examid'>here</a>";
+				return $qa_content;
+			}
+		}
+	} //arjun
 	return include QA_INCLUDE_DIR . 'qa-page-not-found.php';
+}
 
 if (!$question['viewable']) {
 	$qa_content = qa_content_prepare();

@@ -175,8 +175,9 @@ function qa_db_posts_basic_selectspec($voteuserid = null, $full = false, $user =
 		$selectspec['columns']['userflag'] = '^uservotes.flag';
 		$selectspec['columns']['userfavoriteq'] = '^userfavorites.entityid<=>^posts.postid';
 		$selectspec['source'] .= ' LEFT JOIN ^uservotes ON ^posts.postid=^uservotes.postid AND ^uservotes.userid=$';
-		$selectspec['source'] .= ' LEFT JOIN ^userfavorites ON ^posts.postid=^userfavorites.entityid AND ^userfavorites.userid=$ AND ^userfavorites.entitytype=$';
-		array_push($selectspec['arguments'], $voteuserid, $voteuserid, QA_ENTITY_QUESTION);
+		$selectspec['source'] .= ' LEFT JOIN ^userfavorites use index(userid) ON ^posts.postid=^userfavorites.entityid AND ^userfavorites.userid=$ ';
+//AND ^userfavorites.entitytype=$'; //arjun
+		array_push($selectspec['arguments'], $voteuserid, $voteuserid);//, QA_ENTITY_QUESTION);
 	}
 
 	if ($full) {
