@@ -516,8 +516,7 @@ function qa_load_override_files()
 				}
 			}
 		}
-
-		// echo '<pre style="text-align:left;">'.htmlspecialchars($functionsphp).'</pre>'; // to debug munged code
+//		 echo '<pre style="text-align:left;">'.htmlspecialchars($functionsphp).'</pre>'; // to debug munged code
 
 		qa_eval_from_file($functionsphp, $filename);
 	}
@@ -713,10 +712,10 @@ function qa_eval_from_file($eval, $filename)
 	// could also use ini_set('error_append_string') but apparently it doesn't work for errors logged on disk
 
 	global $php_errormsg;
-
 	$oldtrackerrors = @ini_set('track_errors', 1);
+//	 ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
+//	file_put_contents("/tmp2/a2.out", $filename.",".$php_errormsg."\n", FILE_APPEND);
 	$php_errormsg = null;
-
 	eval('?' . '>' . $eval);
 
 	if (isset($php_errormsg)) {
@@ -1614,7 +1613,6 @@ function qa_path($request, $params = null, $rooturl = null, $neaturls = null, $a
 			}
 			break;
 	}
-
 	if (is_array($params)) {
 		foreach ($params as $key => $value) {
 			$value = is_array($value) ? '' : (string) $value;

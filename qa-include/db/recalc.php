@@ -258,7 +258,7 @@ function qa_db_users_get_for_recalc_points($startuserid, $count)
 		));
 	} else {
 		return qa_db_read_all_values(qa_db_query_sub(
-			'SELECT DISTINCT userid FROM ^users WHERE userid>=# ORDER BY userid LIMIT #',
+			'SELECT DISTINCT userid FROM ^userpoints WHERE userid>=# ORDER BY userid LIMIT #', //arjun
 			$startuserid, $count
 		));
 	}
@@ -277,7 +277,9 @@ function qa_db_users_recalc_points($firstuserid, $lastuserid)
 	$qa_userpoints_calculations = qa_db_points_calculations();
 
 	qa_db_query_sub(
-		'DELETE FROM ^userpoints WHERE userid>=# AND userid<=# AND bonus=0', // delete those with no bonus
+		//'DELETE FROM ^userpoints WHERE userid>=# AND userid<=# AND bonus=0', // delete those with no bonus //arjun
+		//$firstuserid, $lastuserid
+		'DELETE FROM ^userpoints WHERE userid>=# AND userid<=# AND bonus=0 and userid not in (select userid from qa_users)', // delete those with no bonus
 		$firstuserid, $lastuserid
 	);
 
@@ -296,11 +298,11 @@ function qa_db_users_recalc_points($firstuserid, $lastuserid)
 			'INSERT IGNORE INTO ^userpoints (userid) SELECT DISTINCT userid FROM ^posts WHERE userid>=# AND userid<=# UNION SELECT DISTINCT userid FROM ^uservotes WHERE userid>=# AND userid<=#',
 			$firstuserid, $lastuserid, $firstuserid, $lastuserid
 		);
-	} else {
-		qa_db_query_sub(
-			'INSERT IGNORE INTO ^userpoints (userid) SELECT DISTINCT userid FROM ^users WHERE userid>=# AND userid<=#',
-			$firstuserid, $lastuserid
-		);
+	} else {//arjun
+	//	qa_db_query_sub(
+	//		'INSERT IGNORE INTO ^userpoints (userid) SELECT DISTINCT userid FROM ^users WHERE userid>=# AND userid<=#',
+	//		$firstuserid, $lastuserid
+	//	);
 	}
 
 	$updatepoints = (int)qa_opt('points_base');

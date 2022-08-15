@@ -534,8 +534,8 @@ if (!QA_FINAL_EXTERNAL_USERS) {
 
 	foreach ($permitoptions as $permitoption) {
 		// if not available to approved and email confirmed users with no points, but yes available to the user, it's something special
-		if (qa_permit_error($permitoption, $userid, QA_USER_LEVEL_APPROVED, QA_USER_FLAGS_EMAIL_CONFIRMED, 0) &&
-			!qa_permit_error($permitoption, $userid, $useraccount['level'], $useraccount['flags'], $userpoints['points'])
+		if (qa_permit_error($permitoption, $userid, QA_USER_LEVEL_APPROVED, QA_USER_FLAGS_EMAIL_CONFIRMED, 0) && is_array($useraccount) && is_array($userpoints) &&
+			!qa_permit_error($permitoption, $userid, $useraccount['level'], $useraccount['flags'], $userpoints['points'])//arjun
 		) {
 			if ($permitoption == 'permit_retag_cat')
 				$showpermits[] = qa_lang(qa_using_categories() ? 'profile/permit_recat' : 'profile/permit_retag');
