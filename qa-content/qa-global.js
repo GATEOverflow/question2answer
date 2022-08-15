@@ -309,7 +309,11 @@ function qa_submit_comment(questionid, parentid, elem)
 				a.qa_disabled = true;
 
 				var c = document.getElementById(lines[1]); // id of comment
-			MathJax.Hub.Queue(['Typeset', MathJax.Hub, "body"]);//arjun
+				typeset(() => {
+                                          const math = document.querySelector('body');
+  return [math];
+});
+
                                 prettyPrint();
 				if (c) {
 					c.style.display = 'none';
@@ -354,8 +358,11 @@ function qa_answer_click(answerid, questionid, target)
 					qa_set_outer_html(l, 'answer', h);
 				else
 					qa_conceal(l, 'answer');
+typeset(() => {
+                                          const math = document.querySelector('body');
+  return [math];
+});
 
-				 MathJax.Hub.Queue(['Typeset', MathJax.Hub, "body"]);//arjun
                                 prettyPrint();
 
 			} else {
@@ -416,7 +423,10 @@ function qa_show_comments(questionid, parentid, elem)
 				var l = document.getElementById('c' + parentid + '_list');
 				l.innerHTML = lines.slice(1).join("\n");
 				l.style.display = 'none';
-				 MathJax.Hub.Queue(['Typeset', MathJax.Hub, l]);//arjun
+				typeset(() => {
+  return [l];
+});
+
 
 				qa_reveal(l, 'comments');
 

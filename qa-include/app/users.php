@@ -462,6 +462,7 @@ if (QA_FINAL_EXTERNAL_USERS) {
 				// If the site is configured to share the ^users table then there might not be a record in the
 				// ^userpoints table so this creates it
 				if ($qa_cached_logged_in_user['points'] === null) {
+			                qa_report_event('u_pointinit', $userid, $userinfo['handle'], qa_cookie_get()); //arjun
 					require_once QA_INCLUDE_DIR . 'db/points.php';
 					require_once QA_INCLUDE_DIR . 'db/users.php';
 
