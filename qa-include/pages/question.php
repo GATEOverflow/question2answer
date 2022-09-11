@@ -125,9 +125,28 @@ if (!isset($question)) { //arjun
 			if(in_array($filtered, $examtags)) {
 				$qa_content = qa_content_prepare();
 				$qa_content['suggest_next'] = qa_html_suggest_qs_tags(qa_using_tags());
-				$query = "select postid from ^exams where tag = $";
+				$query = "select postid,closedbyid from ^exams where tag = $";
 				$result = qa_db_query_sub($query, $filtered);
-				$examid = qa_db_read_one_value($result, true);
+				$row = qa_db_read_one_assoc($result, true);
+				$examid = $row['postid'];
+				$closedbyid = $row['closedbyid'];
+				//echo "closedbyid".$closedbyid;
+				if($closedbyid){
+					$accessgivenlist = qa_db_usermeta_get($closedbyid, "accessgivenlist");
+					$userids = explode(",", $accessgivenlist);
+					if(in_array($userid, $userids)) {
+						$filtertags = qa_db_usermeta_get($userid, "questionfiltertags");
+						$filtertagsarray = explode(",", $filtertags);
+						$find = array_search($filtered, $filtertagsarray);
+						if($find !== false) {
+							unset($filtertagsarray[$find]);
+						}
+						qa_db_usermeta_set($userid, "questionfiltertags", implode(",", $filtertagsarray));	
+						$qa_content['error'] = "Please reload the page";
+						return $qa_content;
+					}
+				}
+				
 				$qa_content['error'] = "This is an exam question and can be seen only after taking the exam <a href='".qa_path_absolute("exam")."/$examid'>here</a>";
 				return $qa_content;
 			}

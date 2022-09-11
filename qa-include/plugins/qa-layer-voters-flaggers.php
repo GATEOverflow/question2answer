@@ -29,6 +29,11 @@ class qa_html_theme_layer extends qa_html_theme_base
 
 	public function main()
 	{
+		if(in_array($this -> template, array("blogs", "exams", "blog-tag")))//arjun 
+		{
+			parent::main();
+			return;
+		}
 		foreach ($this->content as $key => $part) {
 			if (strpos($key, 'q_list') === 0) {
 				if (isset($part['qs']))
@@ -58,6 +63,7 @@ class qa_html_theme_layer extends qa_html_theme_base
 
 	public function q_list_items($q_items)
 	{
+		if(!in_array($this -> template, array("blogs", "exams", "blog-tag"))) //arjun
 		$this->queue_raw_posts_voters_flaggers($q_items);
 
 		parent::q_list_items($q_items);
