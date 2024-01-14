@@ -464,10 +464,9 @@ if (QA_FINAL_EXTERNAL_USERS) {
 				if ($qa_cached_logged_in_user['points'] === null) {
 			                qa_report_event('u_pointinit', $userid, $userinfo['handle'], qa_cookie_get()); //arjun
 					require_once QA_INCLUDE_DIR . 'db/points.php';
-					require_once QA_INCLUDE_DIR . 'db/users.php';
 
 					qa_db_points_update_ifuser($userid, null);
-					qa_db_uapprovecount_update();
+
 					$qa_cached_logged_in_user = qa_db_single_select(qa_db_user_account_selectspec($userid, true));
 				}
 
