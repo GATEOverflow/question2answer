@@ -114,11 +114,29 @@ if (!isset($question)) { //arjun
 	$result = qa_db_query_sub($query, $questionid);
 	$tags = qa_db_read_one_value($result, true);
 	$mytags = explode(",", $tags);
-	$globalfiltertags = qa_opt('qa-filtertags-global');
+	
+	$globalfiltertagsstring = qa_opt('qa-filtertags-global');
+
+	$globalfiltertagsarray = explode(",", $globalfiltertagsstring);
+        $userid = qa_get_logged_in_userid();
+        if($userid){
+                $user_level = qa_get_logged_in_level();
+                if($user_level >= QA_USER_LEVEL_ADMIN) {
+                        $globalfiltertagstring = "";
+                }
+                else if(($accesstags = qa_db_usermeta_get($userid, 'questionaccesstags')) != null )
+                {
+                        $accesstags = explode(",", $accesstags);
+                        $afiltertags = array_diff($globalfiltertagsarray, $accesstags);
+                        $globalfiltertagstring = implode("','", $afiltertags);
+                }
+        }
+
+
 	$query = "select tag from ^exams";
 	$result = qa_db_query_sub($query);
 	$examtags = qa_db_read_all_values($result);
-	$filteredtags = explode(",", $globalfiltertags);
+	$filteredtags = explode(",", $globalfiltertagsstring);
 
 	foreach($filteredtags as $filtered) {
 		if(in_array($filtered, $mytags)) {
@@ -134,14 +152,13 @@ if (!isset($question)) { //arjun
 				if($closedbyid){
 					$accessgivenlist = qa_db_usermeta_get($closedbyid, "accessgivenlist");
 					$userids = explode(",", $accessgivenlist);
-					if(in_array($userid, $userids)) {
-						$filtertags = qa_db_usermeta_get($userid, "questionfiltertags");
-						$filtertagsarray = explode(",", $filtertags);
-						$find = array_search($filtered, $filtertagsarray);
-						if($find !== false) {
-							unset($filtertagsarray[$find]);
+					if($userid and in_array($userid, $userids)) {
+						$accesstags = qa_db_usermeta_get($userid, "questionaccesstags");
+						$accesstagsarray = explode(",", $accesstags);
+						if(!in_array($filtered, $accesstagsarray)){
+							$accesstagsarray[] = $filtered;
 						}
-						qa_db_usermeta_set($userid, "questionfiltertags", implode(",", $filtertagsarray));	
+						qa_db_usermeta_set($userid, "questionaccesstags", implode(",", $accesstagsarray));	
 						$qa_content['error'] = "Please reload the page";
 						return $qa_content;
 					}
