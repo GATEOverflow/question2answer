@@ -53,7 +53,7 @@ function qa_suspend_notifications($suspend = true)
  * @param bool $html
  * @return bool
  */
-function qa_send_notification($userid, $email, $handle, $subject, $body, $subs, $html = false)
+function qa_send_notification($userid, $email, $handle, $subject, $body, $subs, $html = false, $fromemail=NULL)
 {
 	if (qa_to_override(__FUNCTION__)) { $args=func_get_args(); return qa_call_override(__FUNCTION__, $args); }
 
