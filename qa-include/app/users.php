@@ -155,7 +155,7 @@ if (QA_FINAL_EXTERNAL_USERS) {
 		if (qa_to_override(__FUNCTION__)) { $args=func_get_args(); return qa_call_override(__FUNCTION__, $args); }
 
 		//@ini_set('session.gc_maxlifetime', 86400); // worth a try, but won't help in shared hosting environment
-		@ini_set('session.gc_maxlifetime', 86400*365); //arjun worth a try, but won't help in shared hosting environment
+		@ini_set('session.gc_maxlifetime', 86400*60); //arjun worth a try, but won't help in shared hosting environment
 		@ini_set('session.use_trans_sid', false); // sessions need cookies to work, since we redirect after login
 		@ini_set('session.cookie_domain', QA_COOKIE_DOMAIN);
 

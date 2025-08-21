@@ -619,7 +619,8 @@ function qa_db_flagged_post_qs_selectspec($voteuserid, $start, $fullflagged = fa
 		" JOIN ^posts AS flagposts ON parentposts.postid=IF(LEFT(flagposts.type, 1)='Q', flagposts.postid, flagposts.parentid)" .
 		(QA_FINAL_EXTERNAL_USERS ? "" : " LEFT JOIN ^users AS flagusers ON flagposts.userid=flagusers.userid") .
 		" LEFT JOIN ^userpoints AS flaguserpoints ON flagposts.userid=flaguserpoints.userid" .
-		" JOIN (SELECT postid FROM ^posts WHERE flagcount>0 AND type IN ('Q', 'A', 'C') ORDER BY ^posts.flagcount DESC, ^posts.created DESC LIMIT #,#) y ON flagposts.postid=y.postid";
+		//" JOIN (SELECT postid FROM ^posts WHERE flagcount>0 AND type IN ('Q', 'A', 'C') ORDER BY ^posts.flagcount DESC, ^posts.created DESC LIMIT #,#) y ON flagposts.postid=y.postid";
+		" JOIN (SELECT postid FROM ^posts WHERE flagcount>0 AND type IN ('Q', 'A', 'C') ORDER BY ^posts.flagcount DESC, ^posts.created DESC) y ON flagposts.postid=y.postid LIMIT #,#"; //arjun
 
 	array_push($selectspec['arguments'], $start, $count);
 
@@ -1318,7 +1319,7 @@ function qa_db_user_recent_a_qs_selectspec($voteuserid, $identifier, $count = nu
  * @param $count
  * @return array
  */
-function qa_db_user_recent_c_qs_selectspec($voteuserid, $identifier, $count = null)
+function qa_db_user_recent_c_qs_selectspec($voteuserid, $identifier, $count = null, $start = 0)
 {
 	$count = isset($count) ? min($count, QA_DB_RETRIEVE_QS_AS) : QA_DB_RETRIEVE_QS_AS;
 
@@ -1326,15 +1327,21 @@ function qa_db_user_recent_c_qs_selectspec($voteuserid, $identifier, $count = nu
 
 	qa_db_add_selectspec_opost($selectspec, 'cposts');
 
+	$selectspec['columns']['oupvotes'] = 'cposts.upvotes';
+	$selectspec['columns']['odownvotes'] = 'cposts.downvotes';
+	$selectspec['columns']['onetvotes'] = 'cposts.netvotes';
+
+
+
 	$selectspec['source'] .=
 		" JOIN ^posts AS parentposts ON" .
 		" ^posts.postid=(CASE parentposts.type WHEN 'A' THEN parentposts.parentid ELSE parentposts.postid END)" .
 		" JOIN ^posts AS cposts ON parentposts.postid=cposts.parentid" .
 		" JOIN (SELECT postid FROM ^posts WHERE " .
 		" userid=" . (QA_FINAL_EXTERNAL_USERS ? "$" : "(SELECT userid FROM ^users WHERE handle=$ LIMIT 1)") .
-		" AND type='C' ORDER BY created DESC LIMIT #) y ON cposts.postid=y.postid WHERE ^posts.type='Q' AND parentposts.type IN ('Q', 'A')";
+		" AND type='C' ORDER BY created DESC LIMIT #, #) y ON cposts.postid=y.postid WHERE ^posts.type='Q' AND parentposts.type IN ('Q', 'A')";
 
-	array_push($selectspec['arguments'], $identifier, $count);
+	array_push($selectspec['arguments'], $identifier, $start, $count);
 	$selectspec['sortdesc'] = 'otime';
 
 	return $selectspec;

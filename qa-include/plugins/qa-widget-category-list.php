@@ -36,7 +36,6 @@ class qa_category_list
 	public function output_widget($region, $place, $themeobject, $template, $request, $qa_content)
 	{
 		$this->themeobject = $themeobject;
-
 		if (isset($qa_content['navigation']['cat'])) {
 			$nav = $qa_content['navigation']['cat'];
 		} else {
