@@ -40,6 +40,13 @@ if ($explicitqa) {
 } else {
 	$slugs = array();
 }
+if(!strncmp($requestparts[0], "user-", 5)) {//arjun
+	$slugs = array_slice($slugs,0, 1);
+}
+elseif(in_array($requestparts[0], array("pdeleted", "blog-drafts"))) {//arjun
+	$slugs = array_slice($slugs,0, 1);
+}
+
 
 $countslugs = count($slugs);
 

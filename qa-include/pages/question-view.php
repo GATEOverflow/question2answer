@@ -761,6 +761,53 @@ function qa_page_q_comment_view($question, $parent, $comment, $usershtml, $formr
 			);
 		}
 
+		// CUSTOM PDELETED BUTTON REPLACEMENTS
+		if (function_exists('get_option') && get_option('pdeleted_enabled')) {
+			$rowdata = pdel_get_rowdata($commentid);
+			if($rowdata){					
+				if ($comment['queued']){
+						$c_view['error'] = pdel_show_error_details($rowdata);
+						if ($rowdata['edit_submitted'] == "1") {
+							$c_view['classes'] = (isset($c_view['classes']) ? $c_view['classes'] . ' ' : '') . 'pdel-editsubmitted-flag';
+					}
+				}
+				$modlevel = get_option('pdeleted_modlevel');
+				$canSee = qa_get_logged_in_level() >= $modlevel;
+				if ($canSee) {
+					if ($comment['queued']) {
+						// Replace Q2A moderation buttons
+						unset($buttons['approve']);
+						unset($buttons['reject']);
+
+						if (!empty($rowdata)) {
+							$buttons['pdeleted-accept'] = array(
+								'label' => qa_lang('pdeleted/accept_update'),
+								'tags' => 'name="pdeleted-accept" type="submit" data-postid="' . $commentid . '" class="qa-form-light-button pdeleted-accept"',
+								'popup' => qa_lang('pdeleted/accept_update'),
+							);
+						}
+
+						$buttons['pdeleted-reject'] = array(
+							'label' => qa_lang('pdeleted/reject_with'),
+							'tags' => 'name="pdeleted-reject" type="submit" data-postid="' . $commentid . '" class="qa-form-light-button pdeleted-reject"',
+							'popup' => qa_lang('pdeleted/reject_with'),
+						);
+					}
+
+					if (!$comment['hidden'] && !$comment['queued']) {
+						unset($buttons['delete']);
+						$buttons['pdeleted-delete'] = array(
+							'label' => qa_lang('pdeleted/delete_post'),
+							'tags' => 'name="pdeleted-delete" type="submit" data-postid="' . $commentid . '" class="qa-form-light-button pdeleted-delete"',
+							'popup' => qa_lang('pdeleted/delete_post'),
+						);
+					}
+				}
+				if (!$canSee && $comment['hidden'] && !empty($rowdata) && $rowdata['round'] == 2) {
+					unset($buttons['reshow']);
+				}
+			}
+		}
 		$c_view['form'] = array(
 			'style' => 'light',
 			'buttons' => $buttons,

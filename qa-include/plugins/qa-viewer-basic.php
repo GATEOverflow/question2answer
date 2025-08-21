@@ -43,7 +43,9 @@ class qa_viewer_basic
 	public function get_html($content, $format, $options)
 	{
 		if ($format == 'html') {
+
 			$html = qa_sanitize_html($content, @$options['linksnewwindow'], false); // sanitize again for display, for extra safety, and due to new window setting
+			//return $html;
 
 			if (isset($options['blockwordspreg'])) { // filtering out blocked words inline within HTML is pretty complex, e.g. p<b>oo</b>p must be caught
 				require_once QA_INCLUDE_DIR . 'util/string.php';
