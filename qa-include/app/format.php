@@ -793,14 +793,14 @@ function qa_when_to_html($timestamp, $fulldatedays)
 
 	if ($interval < 0 || (isset($fulldatedays) && $interval > 86400 * $fulldatedays)) {
 		// full style date
-		$stampyear = date('Y', $timestamp);
+		$stampyear = date('Y', (int)$timestamp);//arjun
 		$thisyear = date('Y', qa_opt('db_time'));
 
 		$dateFormat = qa_lang($stampyear == $thisyear ? 'main/date_format_this_year' : 'main/date_format_other_years');
 		$replaceData = array(
-			'^day' => date(qa_lang('main/date_day_min_digits') == 2 ? 'd' : 'j', $timestamp),
-			'^month' => qa_lang('main/date_month_' . date('n', $timestamp)),
-			'^year' => date(qa_lang('main/date_year_digits') == 2 ? 'y' : 'Y', $timestamp),
+			'^day' => date(qa_lang('main/date_day_min_digits') == 2 ? 'd' : 'j', (int) $timestamp),
+			'^month' => qa_lang('main/date_month_' . date('n', (int)$timestamp)),
+			'^year' => date(qa_lang('main/date_year_digits') == 2 ? 'y' : 'Y',(int) $timestamp),
 		);
 
 		return array(

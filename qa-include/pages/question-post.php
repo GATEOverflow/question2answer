@@ -571,6 +571,11 @@ function qa_page_q_close_q_form(&$qa_content, $question, $id, $in, $errors)
 */
 function qa_page_q_close_q_submit($question, $closepost, &$in, &$errors)
 {
+//arjun
+if (qa_to_override(__FUNCTION__)) { 
+    $args = func_get_args(); 
+    return qa_call_override(__FUNCTION__, $args); 
+}
 	$in = array(
 		'details' => trim((string)qa_post_text('q_close_details')),
 	);
