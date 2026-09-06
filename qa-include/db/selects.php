@@ -606,6 +606,8 @@ function qa_db_recent_edit_qs_selectspec($voteuserid, $start, $categoryslugs = n
  */
 function qa_db_flagged_post_qs_selectspec($voteuserid, $start, $fullflagged = false, $count = null)
 {
+	if (qa_to_override(__FUNCTION__)) { $args=func_get_args(); return qa_call_override(__FUNCTION__, $args); }
+
 	$count = isset($count) ? min($count, QA_DB_RETRIEVE_QS_AS) : QA_DB_RETRIEVE_QS_AS;
 
 	$selectspec = qa_db_posts_basic_selectspec($voteuserid);

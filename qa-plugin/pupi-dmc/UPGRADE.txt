@@ -1,0 +1,52 @@
+Upgrading CKEditor
+==================
+
+1. Navigate to the download page of CKEditor 4. As the time of writing, the URL is https://ckeditor.com/ckeditor-4/download
+2. Select the "Customize" or "Online Builder" option
+3. Click the "Upload build-config.js" button
+4. Select file "pupi-dm/ckeditor/build-config.js"
+5. Make sure you have not selected the "Autocomplete" or the "Mentions" plugin to be part of the download
+6. Download the optimized CKEditor package
+7. Manually download the following CKEditor addons from their respective pages. Note the URLs are valid as the time of writing. Make sure you are downloading the plugin versions that work with the CKEditor version you have downloaded in the previous step:
+   7.1. "Autocomplete" addon from https://ckeditor.com/cke4/addon/autocomplete
+   7.2. "Mentions" addon from https://ckeditor.com/cke4/addon/mentions
+8. Decompress all the downloaded files and copy the "autocomplete" and "mentions" directories (the ones that contain a "plugin.js" file inside of them) under the "plugins" directory of the newly downloaded CKEditor instance
+9. Move the "pupi-dm/ckeditor/contents-custom.css" file from the CKEditor distributed with the Dynamic Mentions plugin to the new CKEditor you have just downloaded
+10. Merge (apply common sense to see what features you want to keep from both of them) the "config.js" file that comes with the CKEditor distributed with the Dynamic Mentions plugin with the one that you have downloaded. Usually, keeping the "config.js" file delivered with the Dynamic Mentions plugin should do the trick
+11. Edit file "ckeditor/plugins/autocomplete/plugin.js" and locate the "commit" function that in the Dynamic Mention plugin looks like this:
+
+commit: function( itemId ) {
+	if ( !this.model.isActive ) {
+		return;
+	}
+
+	this.close();
+
+	if ( itemId == null ) {
+		itemId = this.model.selectedItemId;
+
+		// If non item is selected abort commit.
+		if ( itemId == null ) {
+			return;
+		}
+	}
+
+	// COPY FROM HERE
+	if (itemId == 0) {return;}
+	// COPY UP TO HERE
+
+	var item = this.model.getItemById( itemId ),
+		editor = this.editor;
+
+	editor.fire( 'saveSnapshot' );
+	editor.getSelection().selectRanges( [ this.model.range ] );
+	editor.insertHtml( this.getHtmlToInsert( item ), 'text' );
+	editor.fire( 'saveSnapshot' );
+},
+
+Merge the existing function with this one. That means, try to see where the line betwen the "COPY FROM" and the "COPY TO" should be placed. Most likely, before the "getItemById( itemId )", as you can see in the current version.
+
+
+Notes:
+ * The extra plugins and any additional plugin configuration can be set using "pupi-dm/public/injector.js". More specifically, plugin settings are configured using "qa_wysiwyg_editor_config_full"
+ * It is not necessary to edit the file "pupi-dm/ckeditor/plugins/autocomplete/plugin.js". But it avoids an issue when the Enter key is pressed while the loading image of the popup is being displayed. If the line is not present, a reference to user "@" is created. Hopefully, the CKEditor team will allow users to filter the results but currently they don't so this tweak has to be done in the CKEditor files.

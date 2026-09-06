@@ -107,6 +107,8 @@ if (!isset($question)) { //arjun
 	$query = "select tags from ^posts where postid = #";
 	$result = qa_db_query_sub($query, $questionid);
 	$tags = qa_db_read_one_value($result, true);
+	if (!$tags) // post doesn't exist (e.g. merged/deleted) — skip exam filter, go to page-not-found
+		return include QA_INCLUDE_DIR . 'qa-page-not-found.php';
 	$mytags = explode(",", $tags);
 	$globalfiltertags = qa_opt('qa-filtertags-global');
 	$query = "select tag from ^exams";

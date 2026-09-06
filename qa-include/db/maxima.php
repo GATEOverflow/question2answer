@@ -56,7 +56,7 @@ $maximaDefaults = array(
 	'QA_DB_RETRIEVE_TAGS' => 200,
 	'QA_DB_RETRIEVE_USERS' => 200,
 	'QA_DB_RETRIEVE_ASK_TAG_QS' => 500,
-	'QA_DB_RETRIEVE_COMPLETE_TAGS' => 1000,
+	'QA_DB_RETRIEVE_COMPLETE_TAGS' => 5000,
 	'QA_DB_RETRIEVE_MESSAGES' => 20,
 
 	// Keep event streams trimmed - not worth storing too many events per question because we only display the

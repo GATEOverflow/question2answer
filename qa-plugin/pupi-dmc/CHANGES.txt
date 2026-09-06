@@ -1,0 +1,41 @@
+Changelog
+=========
+
+# 1.3.0
+
+* Drop support for On-Site Notifications plugin
+* Support for Flexible Notifications System plugin
+* Upgrade to CKEditor v4.22.1
+
+# 1.2.1
+
+* Make sure only mentionable users can be mentioned
+
+# 1.2.0
+
+* Split user fetching logic into separate files
+* Fix some MySQL 8 warnings
+* Upgrade to CKEditor v4.19.1
+
+# 1.1.0
+
+* Give options to filter users in mention pop up
+* Add profile_url to email notifications
+* Upgrade to CKEditor v4.17.1
+
+# 1.0.2
+
+* Apply changes to CKEditor files
+* Upgrade to CKEditor v4.11.1
+* Fix minor issue while checking for widget presence
+
+# 1.0.1
+
+* Apply changes to CKEditor files
+* Add unmodified plugins for CKEditor 4.10.1
+* Upgrade to CKEditor v4.10.1
+* Always force presence of exact match result in popup
+
+# 1.0.0
+
+First release
