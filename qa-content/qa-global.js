@@ -307,18 +307,28 @@ function qa_submit_comment(questionid, parentid, elem)
 				a.qa_disabled = true;
 
 				var c = document.getElementById(lines[1]); // id of comment
+				/*
 				typeset(() => {
-                                          const math = document.querySelector('body');
-  return [math];
-});
+					const math = document.querySelector('body');
+					return [math];
+				});
+				prettyPrint();
+				*/
 
-                                prettyPrint();
 				if (c) {
 					c.style.display = 'none';
 					qa_reveal(c, 'comment');
 				}
 
 				qa_conceal(a, 'form');
+
+				// Typesetting is cosmetic — never let it block the UI above
+				try {
+					typeset(() => [l]); // only re-typeset the new comment list, not the whole page
+					prettyPrint();
+				} catch (e) {
+					console.error('MathJax/prettyPrint failed after comment insert:', e);
+				}
 
 			} else if (lines[0] == '0') {
 				document.forms['c_form_' + parentid].submit();
