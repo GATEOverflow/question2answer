@@ -27,8 +27,14 @@ function qa_reveal(elem, type, callback)
 
 function qa_conceal(elem, type, callback)
 {
-	if (elem)
-		$(elem).slideUp(400);
+	if (elem) {
+		$(elem).slideUp(400, function() {
+			elem.qa_disabled = false;   // <-- always reset, whether or not a callback was passed
+			if (callback) {
+				callback();
+			}
+		});
+	}
 }
 
 function qa_set_inner_html(elem, type, html)
