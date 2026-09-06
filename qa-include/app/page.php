@@ -763,7 +763,7 @@ function qa_content_prepare($voting = false, $categoryids = array())
 	}
 
 	$qa_content['script_rel'] = array('qa-content/jquery-3.5.1.min.js');
-	$qa_content['script_rel'][] = 'qa-content/qa-global.js?' . QA_VERSION;
+	$qa_content['script_rel'][] = 'qa-content/qa-global.js?' . QA_VERSION . ".017";
 
 	if ($voting)
 		$qa_content['error'] = @$qa_page_error_html;
