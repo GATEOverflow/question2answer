@@ -104,9 +104,10 @@ if (isset($question)) {
 // Deal with question not found or not viewable, otherwise report the view event
 
 if (!isset($question)) { //arjun
-	$query = "select tags from ^posts where postid = #";
+	$query = "select tags, title from ^posts where postid = #";
 	$result = qa_db_query_sub($query, $questionid);
-	$tags = qa_db_read_one_value($result, true);
+	$hiddenpost = qa_db_read_one_assoc($result, true);
+	$tags = $hiddenpost['tags'] ?? null;
 	if (!$tags) // post doesn't exist (e.g. merged/deleted) — skip exam filter, go to page-not-found
 		return include QA_INCLUDE_DIR . 'qa-page-not-found.php';
 	$mytags = explode(",", $tags);
@@ -121,10 +122,15 @@ if (!isset($question)) { //arjun
 			if(in_array($filtered, $examtags)) {
 				$qa_content = qa_content_prepare();
 				$qa_content['suggest_next'] = qa_html_suggest_qs_tags(qa_using_tags());
-				$query = "select postid from ^exams where tag = $";
+				$query = "select postid, title from ^exams where tag = $";
 				$result = qa_db_query_sub($query, $filtered);
-				$examid = qa_db_read_one_value($result, true);
+				$exam = qa_db_read_one_assoc($result, true);
+				$examid = $exam['postid'] ?? null;
 				$qa_content['error'] = "This is an exam question and can be seen only after taking the exam <a href='".qa_path_absolute("exam")."/$examid'>here</a>";
+				// The question body is hidden, so give the page its own title and keep it out of search results
+				$qa_content['title'] = qa_html($hiddenpost['title']);
+				$qa_content['description'] = qa_html('Exam question' . (isset($exam['title']) ? ' from ' . $exam['title'] : '') . '. Take the exam to view the question and its solution.');
+				$qa_content['head_lines'][] = '<meta name="robots" content="noindex, follow">';
 				return $qa_content;
 			}
 		}
